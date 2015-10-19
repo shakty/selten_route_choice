@@ -10,7 +10,7 @@ clear all
 % Nr. Players.
 N = 18;
 % Nr. Rounds.
-T = 200;
+T = 200000;
 % Initial endowment of each player.
 A0 = 200;
 % Initial endowment vector for all players.
@@ -53,9 +53,10 @@ propensity_array_0 = repmat(propens_vec_0,1,1,N);
 propensity_array(1,:,:) = propensity_array_0;
 propensity_cell = cell(1,N);
 payoff_matrix = zeros(N,T);
+route_choice = zeros(N,T);
 
 %% Routh choice and interaction
-for t = 1 : 200 
+for t = 1 : T 
     if t == 1
         
         for player = 1 : N          
@@ -250,7 +251,7 @@ vec_ave_nr_players_secondary = ave_nr_players_secondary*ones(1,T);
 time_vec = 1 : T;
 
 ylim_plot = [-2 20];
-xlim_plot = [1 200];
+xlim_plot = [1 T];
 
 figure
 subplot(2,1,1)
@@ -283,7 +284,7 @@ cum_payoff = cumsum(payoff_matrix,2);
 sum_cum_payoff = cum_payoff(:,end);
 
 route_changes = zeros(N,T-1);
-for t = 2 : 200
+for t = 2 : T
     route_choice_t = route_choice(:,t);
     route_choice_tm1 = route_choice(:,t-1);
     route_change_indie_mat = route_choice_t ~= route_choice_tm1;
@@ -299,7 +300,7 @@ ylabel('Cumulative payoffs each player')
 title('Link between route changes and cumulative payoff')
 hold on ;
 my_poly=polyfit(route_changes_total,sum_cum_payoff,1);
-X2 = 1:150; % X data range
+X2 = 1:max(route_changes_total+10); % X data range
 Y2 = polyval(my_poly,X2);
 plot(X2,Y2); 
 
